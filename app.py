@@ -17,7 +17,7 @@ if step1:
         if flavor == "濃厚醇厚，帶有熟果香氣":
             st.success("推薦您試試【熟普洱 A】與【熟普洱 B】。")
         else:
-            st.success("推薦您試試【生普洱 C】與【生普洱 D】。")
+            st.success("推薦您試試【生普洱 C】與【生普洱 】。")
 
         # Step 4: 試飲或直接購買
         choice = st.radio("您希望怎麼體驗這款茶？", ["我要現場試飲看看", "直接購買"])
