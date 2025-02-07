@@ -3,7 +3,10 @@ import streamlit as st
 # 初始化 session_state
 if 'step' not in st.session_state:
     st.session_state.step = 0
-
+# 步驟 1：歡迎與引導
+st.title("滇洱古韻 AI 推薦系統")
+st.write("歡迎來到滇洱古韻！請問您希望獲得專屬茶葉推薦嗎？")
+step1 = st.radio("選擇：", ["是的，幫我推薦適合的茶！", "我想先了解不同的茶款"])
 # 步驟 1：歡迎與引導
 if st.session_state.step == 0:
     st.title("滇洱古韻 AI 推薦系統")
