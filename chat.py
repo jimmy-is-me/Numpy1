@@ -1,6 +1,7 @@
 import openai
+import streamlit as st
 
-openai.api_key = "您的 OpenAI API 金鑰"
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 response = openai.completions.create(
     model="gpt-3.5-turbo",
@@ -12,8 +13,4 @@ response = openai.completions.create(
 
 print(response.choices[0].message['content'])
 
-import openai
-import streamlit as st
-
-openai.api_key = st.secrets["OPENAI_API_KEY"]
 
