@@ -32,7 +32,7 @@ if st.session_state.step == 4:
     choice = st.radio("您希望怎麼體驗這款茶？", ["我要現場試飲看看", "直接購買"])
     if choice:
         st.session_state.step = 5
-
+ 
 # 步驟 5：試飲後回饋
 if st.session_state.step == 5:
     feedback = st.radio("請問您對試飲的茶品感覺如何？", ["很喜歡！我要了解更多", "還不錯，但想試試其他口味", "這款不太適合我"])
