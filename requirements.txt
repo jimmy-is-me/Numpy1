@@ -1,2 +1,1 @@
-streamlit
-openai
+python_version = "3.8"
