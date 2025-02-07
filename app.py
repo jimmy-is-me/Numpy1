@@ -1,30 +1,54 @@
 import openai
+import os
 import streamlit as st
+from streamlit_chat import message
 
-# 設定 OpenAI API 金鑰
-openai.api_key = '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'
+# 读取环境变量中的api_key
+openai.api_key = os.environ.get("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")
+# 也可直接写api_key
+#openai.api_key  = 'API_KEY'
 
-# 初始化聊天記錄
-if 'messages' not in st.session_state:
-    st.session_state.messages = []
+if 'prompts' not in st.session_state:
+    st.session_state['prompts'] = [{"role": "system", "content": "您是一个乐于助人的助手。尽量简洁明了地回答问题，并带有一点幽默表达。"}]
 
-# 顯示聊天記錄
-for message in st.session_state.messages:
-    with st.chat_message(message['role']):
-        st.markdown(message['content'])
+if 'generated' not in st.session_state:
+    st.session_state['generated'] = []
 
-# 使用者輸入
-if prompt := st.chat_input('請輸入您的訊息'):
-    st.session_state.messages.append({'role': 'user', 'content': prompt})
-    with st.chat_message('user'):
-        st.markdown(prompt)
+if 'past' not in st.session_state:
+    st.session_state['past'] = []
 
-    # 呼叫 OpenAI API 生成回應
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=st.session_state.messages
+def generate_response(prompt):
+    st.session_state['prompts'].append({"role": "user", "content": prompt})
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=st.session_state['prompts']
     )
-    assistant_reply = response['choices'][0]['message']['content']
-    st.session_state.messages.append({'role': 'assistant', 'content': assistant_reply})
-    with st.chat_message('assistant'):
-        st.markdown(assistant_reply)
+    message = completion.choices[0].message.content
+    return message
+
+def end_click():
+    st.session_state['prompts'] = [{"role": "system", "content": "您是一个乐于助人的助手。尽量简洁明了地回答问题，并带有一点幽默表达。"}]
+    st.session_state['past'] = []
+    st.session_state['generated'] = []
+    st.session_state['user'] = ""
+
+def chat_click():
+    if st.session_state['user'] != '':
+        chat_input = st.session_state['user']
+        output = generate_response(chat_input)
+        st.session_state['past'].append(chat_input)
+        st.session_state['generated'].append(output)
+        st.session_state['prompts'].append({"role": "assistant", "content": output})
+        st.session_state['user'] = ""
+
+st.image("./logo.png", width=80)
+st.title("我的聊天机器人")
+
+user_input = st.text_input("输入:", key="user")
+chat_button = st.button("发送", on_click=chat_click)
+end_button = st.button("新聊天", on_click=end_click)
+
+if st.session_state['generated']:
+    for i in range(0, len(st.session_state['generated']), 1):
+        message(st.session_state['past'][i], is_user=True)
+        message(st.session_state['generated'][i], key=str(i))
