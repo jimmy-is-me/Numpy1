@@ -6,7 +6,7 @@ from streamlit_chat import message
 # 读取环境变量中的api_key
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 # 也可直接写api_key
-openai.api_key  = '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'
+#openai.api_key  = ''
 
 if 'prompts' not in st.session_state:
     st.session_state['prompts'] = [{"role": "system", "content": "您是一个乐于助人的助手。尽量简洁明了地回答问题，并带有一点幽默表达。"}]
