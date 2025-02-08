@@ -1,39 +1,39 @@
 import streamlit as st
 import openai
 
-# 设置 OpenAI API 密钥
+# 設定 OpenAI API 金鑰
 openai.api_key = st.secrets["openai_api_key"]
 
-st.title("ChatGPT 聊天机器人")
+st.title("ChatGPT 聊天機器人")
 
-# 初始化聊天记录
+# 初始化聊天記錄
 if "messages" not in st.session_state:
-    st.session_state.messages = []
+    st.session_state.messages = [{"role": "system", "content": "你是一個樂於助人的助手。"}]
 
-# 显示聊天记录
+# 顯示聊天記錄
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 获取用户输入
-if prompt := st.chat_input("请输入您的问题："):
-    # 显示用户消息
+# 獲取使用者輸入
+if prompt := st.chat_input("請輸入您的問題："):
+    # 顯示使用者消息
     with st.chat_message("user"):
         st.markdown(prompt)
-    # 将用户消息添加到聊天记录
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-    # 调用 OpenAI API 获取回复
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=st.session_state.messages,
-    )
+    # 呼叫 OpenAI API
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5",  # 或使用 "gpt-3.5-turbo"
+            messages=st.session_state.messages
+        )
+        assistant_message = response['choices'][0]['message']['content']
 
-    # 获取助手的回复内容
-    assistant_message = response.choices[0].message["content"]
+        # 顯示 AI 回覆
+        with st.chat_message("assistant"):
+            st.markdown(assistant_message)
+        st.session_state.messages.append({"role": "assistant", "content": assistant_message})
 
-    # 显示助手消息
-    with st.chat_message("assistant"):
-        st.markdown(assistant_message)
-    # 将助手消息添加到聊天记录
-    st.session_state.messages.append({"role": "assistant", "content": assistant_message})
+    except openai.error.OpenAIError as e:
+        st.error(f"發生錯誤: {e}")
